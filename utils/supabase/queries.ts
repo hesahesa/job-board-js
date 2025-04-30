@@ -1,7 +1,9 @@
 import { createClient } from "./server";
 import { Database } from "./types";
+import { Job } from "../model/job";
 
-export const getAllJobs = async () => {
+// Update the return type of all functions to use the Job interface
+export const getAllJobs = async (): Promise<Job[]> => {
   const supabase = await createClient();
   const { data, error } = await supabase.from("job").select("*");
 
@@ -10,10 +12,10 @@ export const getAllJobs = async () => {
     throw error;
   }
 
-  return data;
+  return (data ?? []) as Job[];
 };
 
-export const getJobsByUser = async (userId: string) => {
+export const getJobsByUser = async (userId: string): Promise<Job[]> => {
   const supabase = await createClient();
   const { data, error } = await supabase.from("job").select("*").eq("created_by", userId);
 
@@ -22,10 +24,14 @@ export const getJobsByUser = async (userId: string) => {
     throw error;
   }
 
-  return data;
+  return (data ?? []) as Job[];
 };
 
-export const updateJobByUser = async (jobId: number, userId: string, updates: Partial<Database["public"]["Tables"]["job"]["Update"]>) => {
+export const updateJobByUser = async (
+  jobId: number,
+  userId: string,
+  updates: Partial<Database["public"]["Tables"]["job"]["Update"]>
+): Promise<Job[]> => {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("job")
@@ -38,10 +44,10 @@ export const updateJobByUser = async (jobId: number, userId: string, updates: Pa
     throw error;
   }
 
-  return data;
+  return (data ?? []) as Job[];
 };
 
-export const deleteJobByUser = async (jobId: number, userId: string) => {
+export const deleteJobByUser = async (jobId: number, userId: string): Promise<Job[]> => {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("job")
@@ -54,5 +60,5 @@ export const deleteJobByUser = async (jobId: number, userId: string) => {
     throw error;
   }
 
-  return data;
+  return (data ?? []) as Job[];
 };
