@@ -4,7 +4,7 @@ import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { insertJob, updateJobById } from "@/utils/supabase/queries";
+import { deleteJobById, insertJob, updateJobById } from "@/utils/supabase/queries";
 
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
@@ -197,6 +197,31 @@ export const updateJobAction = async (formData: FormData) => {
 
   if (!updated) {
     return encodedRedirect("error", `/dashboard/edit-job/${id}`, "Failed to update job");
+  }
+
+  return redirect(`/dashboard`);
+};
+
+export const deleteJobAction = async (formData: FormData) => {
+  const id = formData.get("id")?.toString();
+
+  if (!id) {
+    return encodedRedirect("error", `/dashboard/delete-job/${id}`, "All fields are required");
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return encodedRedirect("error", "/sign-in", "You must be signed in to update a job");
+  }
+
+  const updated = deleteJobById(Number.parseInt(id));
+
+  if (!updated) {
+    return encodedRedirect("error", `/dashboard/delete-job/${id}`, "Failed to update job");
   }
 
   return redirect(`/dashboard`);
