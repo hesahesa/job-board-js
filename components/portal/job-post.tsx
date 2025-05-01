@@ -1,9 +1,12 @@
 import { Job } from "@/utils/model/job";
+import Link from "next/link";
 
 export function JobPost({
   job,
+  edit_mode = false,
 }: {
-  job: Job;
+  job: Job,
+  edit_mode: boolean;
 }) {
   return (
     <li className="relative">
@@ -20,6 +23,14 @@ export function JobPost({
                 <span>Location: {job.location?? "No Location"}</span>
                 <span>Job Type:{job.job_type?? "No Job Type"}</span>
                 <span>Description: {job.description?? "No Description"}</span>
+                { edit_mode &&<Link href={`/dashboard/edit-job/${job.id}`} className="text-blue-500 hover:underline">
+                  Edit
+                </Link>
+                }
+                { edit_mode &&<Link href={`/dashboard/edit-job/${job.id}`} className="text-red-500 hover:underline">
+                  Delete
+                </Link>
+                }
             </div>
         </div>
       </label>

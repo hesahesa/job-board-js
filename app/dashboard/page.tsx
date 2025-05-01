@@ -25,7 +25,7 @@ export default async function ProtectedPage() {
       </Button>
       <div>
         <h2 className="font-bold text-2xl mb-4">Jobs Posted by You:</h2>
-        <JobPostList jobs={jobs}/>
+        <JobPostList jobs={jobs} edit_mode={true}/>
       </div>
     </div>
   );

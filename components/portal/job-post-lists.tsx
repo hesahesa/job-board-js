@@ -1,13 +1,13 @@
 import { Job } from "@/utils/model/job";
 import { JobPost } from "./job-post";
 
-export default function JobPostList({jobs}: {jobs: Job[]}) {
+export default function JobPostList({jobs, edit_mode = false}: {jobs: Job[], edit_mode?: boolean}) {
   return (
     <>
       {jobs?.length > 0 ? (
         <ol className="flex flex-col gap-6">
           {jobs.map((job) => (
-            <JobPost key={job.id} job={job} />
+            <JobPost key={job.id} job={job} edit_mode={edit_mode}/>
           ))}
         </ol>
       ) : (
