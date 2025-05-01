@@ -4,6 +4,7 @@ import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { insertJob } from "@/utils/supabase/queries";
 
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
@@ -131,4 +132,36 @@ export const signOutAction = async () => {
   const supabase = await createClient();
   await supabase.auth.signOut();
   return redirect("/sign-in");
+};
+
+export const addJobAction = async (formData: FormData) => {
+  const title = formData.get("title")?.toString();
+  const companyName = formData.get("company_name")?.toString();
+  const description = formData.get("description")?.toString();
+  const location = formData.get("location")?.toString();
+  const jobType = formData.get("job_type")?.toString();
+
+  if (!title || !companyName || !description || !location || !jobType) {
+    return encodedRedirect("error", "/dashboard/add-job", "All fields are required");
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return encodedRedirect("error", "/sign-in", "You must be signed in to add a job");
+  }
+
+  const newJob = await insertJob({
+    title,
+    company_name: companyName,
+    description,
+    location,
+    job_type: jobType,
+    created_by: user.id,
+  });
+
+  return redirect("/dashboard");
 };
