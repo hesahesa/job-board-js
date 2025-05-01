@@ -3,6 +3,7 @@ import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getJobById } from "@/utils/supabase/queries";
+import { createClient } from "@/utils/supabase/server";
 
 export default async function EditJob({
   params,
@@ -14,6 +15,13 @@ export default async function EditJob({
 
   if (!job) {
     return <div>Job not found</div>;
+  }
+
+  const supabase = await createClient();
+  const user = await supabase.auth.getUser();
+  
+  if (job.created_by !== user.data.user?.id) {
+    return <div>You are not allowed to delete this job</div>;
   }
 
   return (
