@@ -26,9 +26,8 @@ export const getJobsByUser = async (userId: string): Promise<Job[]> => {
   return (data ?? []) as Job[];
 };
 
-export const updateJobByUser = async (
+export const updateJobById = async (
   jobId: number,
-  userId: string,
   updates: Partial<Database["public"]["Tables"]["job"]["Update"]>
 ): Promise<Boolean> => {
   const supabase = await createClient();
@@ -36,7 +35,6 @@ export const updateJobByUser = async (
     .from("job")
     .update(updates)
     .eq("id", jobId)
-    .eq("created_by", userId);
 
   if (error) {
     console.error("Error updating job by user:", error);
@@ -71,6 +69,17 @@ export const insertJob = async (
   if (error) {
     console.error("Error inserting job:", error);
     throw error;
+  }
+
+  return data as Job;
+};
+
+export const getJobById = async (jobId: number): Promise<Job | null> => {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("job").select("*").eq("id", jobId).single();
+
+  if (error) {
+    return null;
   }
 
   return data as Job;
