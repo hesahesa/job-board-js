@@ -226,3 +226,23 @@ export const deleteJobAction = async (formData: FormData) => {
 
   return redirect(`/dashboard`);
 };
+
+export const searchJobAction = async (formData: FormData) => {
+  const location = formData.get("location")?.toString();
+  const jobType = formData.get("job_type")?.toString();
+
+  if (!location || !jobType) {
+    return encodedRedirect("error", `/dashboard/`, "All fields are required");
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return encodedRedirect("error", "/sign-in", "You must be signed in to update a job");
+  }
+
+  return redirect(`/filter/${location}/${jobType}`);
+};
