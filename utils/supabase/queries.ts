@@ -2,7 +2,6 @@ import { createClient } from "./server";
 import { Database } from "./types";
 import { Job } from "../model/job";
 
-// Update the return type of all functions to use the Job interface
 export const getAllJobs = async (): Promise<Job[]> => {
   const supabase = await createClient();
   const { data, error } = await supabase.from("job").select("*");
@@ -61,4 +60,18 @@ export const deleteJobByUser = async (jobId: number, userId: string): Promise<Bo
   }
 
   return true;
+};
+
+export const insertJob = async (
+  job: Database["public"]["Tables"]["job"]["Insert"]
+): Promise<Job> => {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("job").insert(job).select().single();
+
+  if (error) {
+    console.error("Error inserting job:", error);
+    throw error;
+  }
+
+  return data as Job;
 };
