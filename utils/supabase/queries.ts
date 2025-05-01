@@ -31,9 +31,9 @@ export const updateJobByUser = async (
   jobId: number,
   userId: string,
   updates: Partial<Database["public"]["Tables"]["job"]["Update"]>
-): Promise<Job[]> => {
+): Promise<Boolean> => {
   const supabase = await createClient();
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("job")
     .update(updates)
     .eq("id", jobId)
@@ -41,15 +41,15 @@ export const updateJobByUser = async (
 
   if (error) {
     console.error("Error updating job by user:", error);
-    throw error;
+    return false;
   }
 
-  return (data ?? []) as Job[];
+  return true;
 };
 
-export const deleteJobByUser = async (jobId: number, userId: string): Promise<Job[]> => {
+export const deleteJobByUser = async (jobId: number, userId: string): Promise<Boolean> => {
   const supabase = await createClient();
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("job")
     .delete()
     .eq("id", jobId)
@@ -57,8 +57,8 @@ export const deleteJobByUser = async (jobId: number, userId: string): Promise<Jo
 
   if (error) {
     console.error("Error deleting job by user:", error);
-    throw error;
+    throw false;
   }
 
-  return (data ?? []) as Job[];
+  return true;
 };
