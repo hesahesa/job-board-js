@@ -44,13 +44,12 @@ export const updateJobById = async (
   return true;
 };
 
-export const deleteJobByUser = async (jobId: number, userId: string): Promise<Boolean> => {
+export const deleteJobById = async (jobId: number): Promise<Boolean> => {
   const supabase = await createClient();
   const { error } = await supabase
     .from("job")
     .delete()
     .eq("id", jobId)
-    .eq("created_by", userId);
 
   if (error) {
     console.error("Error deleting job by user:", error);

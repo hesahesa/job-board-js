@@ -27,7 +27,7 @@ export function JobPost({
                   Edit
                 </Link>
                 }
-                { edit_mode &&<Link href={`/dashboard/edit-job/${job.id}`} className="text-red-500 hover:underline">
+                { edit_mode &&<Link href={`/dashboard/delete-job/${job.id}`} className="text-red-500 hover:underline">
                   Delete
                 </Link>
                 }
